@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h2>Employee Bidding System</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/userManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">User Management</button>
+            </form>
+            <form action="/bidManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Bid Management</button>
+            </form>
+            <form action="/logout" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="form-container">
+    {% if message %}
+    <p style="color: red;">{{ message }}</p>
+    {% endif %}
+    <h2>Add New User</h2>
+    <form action="/addUser" method="post">
+        <label for="EIN">EIN:</label>
+        <input type="number" id="EIN" name="EIN" required><br><br>
+        
+        <label for="fName">First Name:</label>
+        <input type="text" id="fName" name="fName" required><br><br>
+
+        <label for="lName">Last Name:</label>
+        <input type="text" id="lName" name="lName" required><br><br>
+        
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required><br><br>
+        
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="employee">Employee</option>
+            <option value="shop_steward">Shop Steward</option>
+            <option value="manager">Manager</option>
+        </select><br><br>
+        
+        <label for="securityQuestion">Security Question:</label>
+        <input type="text" id="securityQuestion" name="securityQuestion" required><br><br>
+        
+        <label for="securityAnswer">Security Answer:</label>
+        <input type="text" id="securityAnswer" name="securityAnswer" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <input type="hidden" id="firstLogin" name="firstLogin" value="yes">
+
+        <input type="submit" value="Register" class="action-button">
+    </form>
+</div>
+{% endblock %}

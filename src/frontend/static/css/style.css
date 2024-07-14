@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #003366; /* Dark blue background */
+    color: white;
+}
+
+.navbar-container {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #4da6ff; /* Lighter blue background */
+    color: white;
+    text-decoration: none;
+    border: 2px solid #003366; /* Dark blue border */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    background-color: #66b3ff; /* Slightly lighter blue for hover effect */
+}
+
+.user-list-container,
+.form-container {
+    padding: 20px;
+    background-color: #2a5d84;
+    color: white;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls form {
+    margin-right: 10px;
+}
+
+.action-button {
+    padding: 10px 15px;
+    border: 2px solid #003366;
+    background-color: #4da6ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background-color: #66b3ff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #003366;
+    padding: 10px;
+    text-align: left;
+    color: white;
+}
+
+th {
+    background-color: #003366;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #2a5d84; /* Darker blue for even rows */
+}
+
+tr:nth-child(odd) {
+    background-color: #3b759a; /* Lighter blue for odd rows */
+}
+
+form select {
+    border: 2px solid #003366;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+form select:hover {
+    background-color: #f0f2f5;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 2px solid #003366;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    width: auto;
+    padding: 10px 15px;
+    margin-top: 20px;
+}

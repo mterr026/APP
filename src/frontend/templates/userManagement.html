@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h2>Employee Bidding System</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/userManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">User Management</button>
+            </form>
+            <form action="/bidManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Bid Management</button>
+            </form>
+            <form action="/logout" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="user-list-container">
+    <h2>User Management</h2>
+    <div class="controls">
+        <form action="/createUser" method="get" style="display: inline;">
+            <button type="submit" class="action-button">Create User</button>
+        </form>
+        <form action="/updateUser" method="get" id="updateForm" style="display: inline;">
+            <input type="hidden" name="EIN" id="updateEIN">
+            <button type="submit" class="action-button" onclick="copySelectedEIN('updateEIN')">Update</button>
+        </form>
+        <form action="/deleteUser" method="post" id="deleteForm" style="display: inline;">
+            <button type="submit" class="action-button" onclick="copySelectedCheckboxes()">Delete</button>
+        </form>
+            <select name="sortBy" class="action-button" onchange="sortTable()">
+                <option value="EIN">Sort by Employee ID</option>
+                <option value="fName">Sort by Name</option>
+                <option value="startDate">Sort by Start Date</option>
+                <option value="role">Sort by Role</option>
+            </select>
+    </div>
+    <form id="employeeForm">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Employee ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Start Date</th>
+                    <th>Role</th>
+                    <th>Current Bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employees %}
+                    {% for employee in employees %}
+                    <tr>
+                        <td><input type="checkbox" name="EIN" value="{{ employee.EIN }}"></td>
+                        <td data-sort="EIN">{{ employee.EIN }}</td>
+                        <td>{{ employee.fName }}</td>
+                        <td data-sort="lName">{{ employee.lName }}</td>
+                        <td data-sort="startDate">{{ employee.startDate }}</td>
+                        <td data-sort="role">{{ employee.role }}</td>
+                        <td data-sort="currentBid">{{ employee.currentBid }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script>
+    function copySelectedCheckboxes() {
+        const employeeForm = document.getElementById('employeeForm');
+        const deleteForm = document.getElementById('deleteForm');
+        
+        // Clear existing hidden inputs in deleteForm
+        while (deleteForm.querySelector('input[name="EIN"]')) {
+            deleteForm.querySelector('input[name="EIN"]').remove();
+        }
+        
+        // Copy selected checkboxes to deleteForm as hidden inputs
+        const checkboxes = employeeForm.querySelectorAll('input[name="EIN"]:checked');
+        if (checkboxes.length === 0) {
+            alert("Please select a user to delete.");
+            event.preventDefault();
+        } else {
+            checkboxes.forEach(checkbox => {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'EIN';
+            hiddenInput.value = checkbox.value;
+            deleteForm.appendChild(hiddenInput);
+        });
+        }
+        
+    }
+
+    function copySelectedEIN(hiddenInputId) {
+        const employeeForm = document.getElementById('employeeForm');
+        const hiddenInput = document.getElementById(hiddenInputId);
+        
+        // Get selected checkbox
+        const selectedCheckbox = employeeForm.querySelector('input[name="EIN"]:checked');
+        if (selectedCheckbox) {
+            hiddenInput.value = selectedCheckbox.value;
+        } else {
+            alert("Please select a user to update.");
+            event.preventDefault();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var sortSelect = document.querySelector('select[name="sortBy"]');
+    var employeeTable = document.getElementById('employeeForm'); // Assuming your table has this ID
+
+    sortSelect.addEventListener('change', function() {
+        var sortBy = this.value; // Get the selected sorting criteria
+        var rows = Array.from(employeeTable.querySelectorAll('tr')).slice(1); // Convert rows to an array, excluding the header row
+
+        // Sort rows based on the selected criteria
+        rows.sort(function(a, b) {
+            var aValue = a.querySelector(`td[data-sort="${sortBy}"]`).textContent; // Assuming each td has a data-sort attribute corresponding to the sorting criteria
+            var bValue = b.querySelector(`td[data-sort="${sortBy}"]`).textContent;
+
+            // Modify this comparison based on data type (e.g., string, date, number)
+            return aValue.localeCompare(bValue); // For string comparison; might need adjustments for numbers or dates
+        });
+
+        // Reattach sorted rows to the table
+        rows.forEach(row => employeeTable.appendChild(row));
+    });
+});
+    
+</script>
+{% endblock %}

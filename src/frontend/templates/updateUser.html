@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h2>Employee Bidding System</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/userManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">User Management</button>
+            </form>
+            <form action="/bidManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Bid Management</button>
+            </form>
+            <form action="/logout" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="form-container">
+    {% if message %}
+    <p style="color: red;">{{ message }}</p>
+    {% endif %}
+    <h2>Update User</h2>
+    <p>
+        <span><h3 style="display: inline; color: white;">EIN:</h3> <span style="color: yellow; font-weight: bold;">{{employees.EIN}}</span></span>
+        <span><h3 style="display: inline; color: white;">Name:</h3> <span style="color: yellow; font-weight: bold;">{{employees.fName}} {{employees.lName}}</span></span>
+    </p>
+    <form action="/editUser" method="post">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required><br><br>
+        
+        <label for="role">Role:</label>
+        <input type="text" id="role" name="role" required><br><br>
+        
+        <label for="securityQuestion">Security Question:</label>
+        <input type="text" id="securityQuestion" name="securityQuestion" required><br><br>
+        
+        <label for="securityAnswer">Security Answer:</label>
+        <input type="text" id="securityAnswer" name="securityAnswer" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <input type="hidden" id="firstLogin" name="firstLogin" value="yes">
+
+        <input type="submit" value="Update" class="action-button">
+    </form>
+</div>
+{% endblock %}
