@@ -60,3 +60,10 @@ def updateBid(
     message = businessLogic.updateBid(db, bidNum, bid)
     return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
 
+@router.post("/deleteBid")
+def deleteBid(
+    bidNum: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    message = businessLogic.removeBid(db, bidNum)
+    return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
