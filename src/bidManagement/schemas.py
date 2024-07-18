@@ -8,8 +8,8 @@ class BidCreate(BaseModel):
     closeDate: str
     description: str
     hours: int
-    awarded: bool
-    daysOff: int
+    awarded: str
+    daysOff: str
 
 class BidUpdate(BaseModel):
     bidNum: int
@@ -18,5 +18,5 @@ class BidUpdate(BaseModel):
     closeDate: str
     description: str
     hours: int
-    awarded: bool
-    daysOff: int
+    awarded: str
+    daysOff: str

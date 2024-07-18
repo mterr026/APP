@@ -19,7 +19,7 @@ def newBid(
     description: str = Form(...),
     hours: int = Form(...),
     awarded: bool = Form(...),
-    daysOff: int = Form(...),
+    daysOff: str = Form(...),
     db: Session = Depends(get_db),
 ):
     newBid = models.Bids(
@@ -43,8 +43,8 @@ def updateBid(
     closeDate: str = Form(...),
     description: str = Form(...),
     hours: int = Form(...),
-    awarded: bool = Form(...),
-    daysOff: int = Form(...),
+    awarded: str = Form(...),
+    daysOff: str = Form(...),
     db: Session = Depends(get_db),
 ):
     bid = models.Bids(

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from dependencies import get_db
 from auth.businessLogic import ACCESS_TOKEN_EXPIRE_MINUTES, authenticateUser, createAccessToken
 from DB.models import User
+import os
 
 #This is the router for the auth module
 router = APIRouter()
@@ -28,16 +29,17 @@ def loginForAccessToken(response: Response, formData: OAuth2PasswordRequestForm 
     accessToken = createAccessToken(
         data={"sub": user.EIN}, expiresDelta=accessTokenExpires
     )
-
-    response.set_cookie(key="accessToken", value=accessToken, httponly=True, secure=True, samesite='Strict')
+    secure = os.getenv("SECURE_COOKIES", "False").lower() == "true"
+    response.set_cookie(key="accessToken", value=accessToken, httponly=True, secure=secure, samesite='Strict')
     
     return {"accessToken": accessToken, "token_type": "bearer"}
 
 #Endpoint to log out and delete the access token
 @router.post("/logout")
 def logout(response: Response):
-    print("Deleting cookie: accessToken")
+    secure = os.getenv("SECURE_COOKIES", "False").lower() == "true"
+
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
-    response.delete_cookie(key="accessToken", path='/', httponly=True, secure=True, samesite='Strict')
+    response.delete_cookie(key="accessToken", path='/', httponly=True, secure=secure, samesite='Strict')
     response.headers["Cache-Control"] = "no-store"
     return response

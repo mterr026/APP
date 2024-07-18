@@ -34,6 +34,7 @@ def getCurrentUser(request: Request, db: Session = Depends(get_db)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    
     # Decode the token and get the payload 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

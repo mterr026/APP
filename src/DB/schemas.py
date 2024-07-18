@@ -22,8 +22,8 @@ class Bids(BaseModel):
     closeDate: str
     description: str
     hours: int
-    awarded: bool
-    daysOff: int
+    awarded: str
+    daysOff: str
 
     class Config:
         orm_mode = True

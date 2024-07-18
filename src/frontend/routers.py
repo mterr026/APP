@@ -30,7 +30,7 @@ def updateUser(request: Request, message: str = None, EIN: int = Query(None), db
 @router.get("/userManagement", response_class=HTMLResponse, response_model=List[schemas.User])
 def getUsers(request: Request, 
              db: Session = Depends(get_db),
-             currentUser: str = Depends(getCurrentActiveUser)):
+             currentUser: str = Depends(getCurrentActiveUser)): 
     users = CRUD.CRUD.getUsers(db)
     return templates.TemplateResponse("userManagement.html", {"request": request, "users": users})
 
@@ -42,18 +42,17 @@ def sortByID(request: Request):
 def createUser(request: Request, currentUser: User = Depends(getCurrentUser)):
     EIN = currentUser.EIN
     if currentUser.firstLogin == "no":
-        return RedirectResponse(url="/userManagement")
-    elif currentUser.role == "manager":
-        return RedirectResponse(url="/userManagement")
-    elif currentUser.role == "employee":
-        return RedirectResponse(url="/employeeBidView")
-    elif currentUser.role == "shopSteward":
-        return RedirectResponse(url="/shopStewardBidView")
+        if currentUser.role == "manager":
+            return RedirectResponse(url="/userManagement")
+        elif currentUser.role == "employee":
+            return RedirectResponse(url="/employeeBidView")
+        elif currentUser.role == "shopSteward":
+            return RedirectResponse(url="/shopStewardBidView")
     else:
         return templates.TemplateResponse("firstLogin.html", {"request": request, "EIN": EIN})
     
 @router.get("/bidManagement")
-def bidManagement(request: Request, db: Session = Depends(get_db)):
+def bidManagement(request: Request, db: Session = Depends(get_db), currentUser: str = Depends(getCurrentActiveUser)):
     bids = CRUD.CRUD.getBids(db)
     return templates.TemplateResponse("bidManagement.html", {"request": request, "bids": bids})
 

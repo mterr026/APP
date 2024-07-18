@@ -26,7 +26,7 @@ class Bids(Base):
     description = Column(String, nullable=False)
     hours = Column(Integer, nullable=False)
     awarded = Column(String, default=False)
-    daysOff = Column(Integer, nullable=False)
+    daysOff = Column(String, nullable=False)
 
 class bidSelections(Base):
     __tablename__ = "bidSelections"

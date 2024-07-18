@@ -102,5 +102,5 @@ def register(
     securityAnswer = securityAnswer
     EIN = user.EIN
     CRUD.CRUD.registerUser(db, EIN, password, securityQuestion, securityAnswer)
-    return RedirectResponse(url="/bidMangament", status_code=303)
+    return RedirectResponse(url="/firstLogin", status_code=303)
 
