@@ -24,16 +24,14 @@
     <p><strong>Hours:</strong> {{ bids.hours }}</p>
     <p><strong>Awarded:</strong> {{ bids.awarded }}</p>
     <p><strong>Days Off:</strong> {{ bids.daysOff }}</p>
+    
     {% if currentUser.role == 'employee' and bids.closeDate >= current_date and bids.postDate >= current_date %}
     <form action="/placeBid" method="post" style="display: inline;">
         <input type="hidden" name="bidNum" value="{{ bids.bidNum }}">
         <input type="hidden" name="EIN" value="{{ currentUser.EIN }}">
-        <input type="hidden" name="id" value="{{ bids.bidNum + 10 }}">
-        <button type="submit" class="action-button">Place Bid</button>
+        <button type="submit" class="action-button" onclick="return confirm('Are you sure you want to place this bid?');">Place Bid</button>
     </form>
-    
-    {% else %}
+    {% endif %}
     <button type="button" class="nav-button" onclick="history.back()">Back</button>
-    {% endif %} 
 </div>
 {% endblock %}

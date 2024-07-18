@@ -75,11 +75,11 @@ def placeBid(
     db: Session = Depends(get_db),
 ):
     # Check if the bid already exists for the given EIN and bidNum
-    existingBid = businessLogic.checkExistingBid(db, EIN)
+    existingBid = businessLogic.checkExistingBid(db, bidNum, EIN)
     if existingBid:
         message = "You have already placed a bid on this posting."
     else:
-        businessLogic.placeBid(db, bidNum, EIN, postingID)
+        businessLogic.placeBid(db, bidNum, EIN)
         message = "You have Placed this bid"
     
     return RedirectResponse(url=f"/bidDetails?bidNum={bidNum}&message={message}", status_code=303)

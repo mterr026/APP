@@ -150,10 +150,9 @@ class CRUD:
         return [BidsSchema(bid) for bid in bids]
         
     #add employee bid selection
-    def placeBid(db: Session, bidNum: int, EIN: int, postingID):
+    def placeBid(db: Session, bidNum: int, EIN: int):
         # Create a new bid selection
         newBidSelection = DB.models.bidSelections(
-            id = postingID,
             EIN = EIN,
             bidNum = bidNum
         )

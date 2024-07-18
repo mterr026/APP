@@ -30,7 +30,6 @@ class Bids(Base):
 
 class bidSelections(Base):
     __tablename__ = "bidSelections"
-    id = Column(Integer, nullable=False, unique=True, index=True)
     EIN = Column(Integer, ForeignKey("user.EIN"), primary_key=True, nullable=False)
     bidNum = Column(Integer, ForeignKey("bids.bidNum"), primary_key=True, nullable=False)
 
