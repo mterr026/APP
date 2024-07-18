@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h2>Bid Details</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/bidManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Back to Bid Management</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="bid-details-container">
+    <h2>Bid Number: {{ bids.bidNum }}</h2>
+    <p><strong>Status:</strong> {{ bids.status }}</p>
+    <p><strong>Post Date:</strong> {{ bids.postDate }}</p>
+    <p><strong>Close Date:</strong> {{ bids.closeDate }}</p>
+    <p><strong>Description:</strong></p>
+    <p>{{ bids.description }}</p>
+    <p><strong>Hours:</strong> {{ bids.hours }}</p>
+    <p><strong>Awarded:</strong> {{ bids.awarded }}</p>
+    <p><strong>Days Off:</strong> {{ bids.daysOff }}</p>
+
+    {% if bids.closeDate < current_date %}
+    <form action="/someAction" method="post" style="display: inline;">
+        <input type="hidden" name="bidNum" value="{{ bids.bidNum }}">
+        <button type="submit" class="action-button">Perform Action</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

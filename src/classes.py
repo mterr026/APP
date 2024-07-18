@@ -36,6 +36,7 @@ class Employee(User):
 
     def selectBid(self):
         pass
+
     
 
 #shop steward  sub class of User   
@@ -80,7 +81,8 @@ class Manager(User):
 
     def addBid(self):
         pass
-    
+#    
+
 class Bids:
     def __init__(self,bidNum: int,status: str,postDate: datetime,closeDate: datetime,description: str,hours: int,awarded: str,daysOff: str):
         self.bidNum = bidNum

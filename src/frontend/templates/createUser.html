@@ -11,7 +11,7 @@
             <form action="/bidManagement" method="get" style="display: inline;">
                 <button type="submit" class="nav-button">Bid Management</button>
             </form>
-            <form action="/logout" method="get" style="display: inline;">
+            <form action="/logout" method="post" style="display: inline;">
                 <button type="submit" class="nav-button">Logout</button>
             </form>
         </div>
@@ -42,13 +42,7 @@
             <option value="manager">Manager</option>
         </select><br><br>
         
-        <label for="securityQuestion">Security Question:</label>
-        <input type="text" id="securityQuestion" name="securityQuestion" required><br><br>
-        
-        <label for="securityAnswer">Security Answer:</label>
-        <input type="text" id="securityAnswer" name="securityAnswer" required><br><br>
-        
-        <label for="password">Password:</label>
+        <label for="password">Temporary Password:</label>
         <input type="password" id="password" name="password" required><br><br>
         
         <input type="hidden" id="firstLogin" name="firstLogin" value="yes">

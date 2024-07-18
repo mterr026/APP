@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h2>Employee Bidding System</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/logout" method="post" style="display: inline;">
+                <button type="submit" class="nav-button">Logout</button>
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="user-list-container">
+    <h2>Bid View</h2>
+    <div class="controls">
+        <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">
+            <input type="hidden" name="bidNum" id="viewBidNum">
+            <button type="submit" class="action-button" onclick="copySelectedBidNum('viewBidNum')">View Description</button>
+        </form>
+        <select name="sortBy" class="action-button" onchange="sortTable()">
+            <option value="bidNumber">Sort by Bid Number</option>
+            <option value="postDate">Sort by Post Date</option>
+            <option value="status">Sort by Status</option>
+        </select>
+    </div>
+    <form id="bidForm">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Bid Number</th>
+                    <th>Status</th>
+                    <th>Post Date</th>
+                    <th>Close Date</th>
+                    <th>Description</th>
+                    <th>Hours</th>
+                    <th>Awarded</th>
+                    <th>Days Off</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bids %}
+                    {% for bid in bids %}
+                    <tr>
+                        <td><input type="checkbox" name="bidNum" value="{{ bid.bidNum }}"></td>
+                        <td data-sort="bidNumber">{{ bid.bidNum }}</td>
+                        <td>{{ bid.status }}</td>
+                        <td data-sort="postDate">{{ bid.postDate }}</td>
+                        <td data-sort="closeDate">{{ bid.closeDate }}</td>
+                        <td>{{ bid.description }}</td>
+                        <td>{{ bid.hours }}</td>
+                        <td>{{ bid.awarded }}</td>
+                        <td>{{ bid.daysOff }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script>
+    function copySelectedBidNum(hiddenInputId) {
+        const bidForm = document.getElementById('bidForm');
+        const hiddenInput = document.getElementById(hiddenInputId);
+        
+        // Get selected checkbox
+        const selectedCheckbox = bidForm.querySelector('input[name="bidNum"]:checked');
+        if (selectedCheckbox) {
+            hiddenInput.value = selectedCheckbox.value;
+        } else {
+            alert("Please select a bid to view.");
+            event.preventDefault();
+        }
+    }
+
+    function sortTable() {
+        const sortBy = document.querySelector('select[name="sortBy"]').value;
+        const bidForm = document.getElementById('bidForm');
+        const tbody = bidForm.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        rows.sort((a, b) => {
+            const aValue = a.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
+            const bValue = b.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
+            
+            if (sortBy === 'postDate' || sortBy === 'closeDate') {
+                // Parse dates for comparison
+                return new Date(aValue) - new Date(bValue);
+            } else if (!isNaN(aValue) && !isNaN(bValue)) {
+                // Compare as numbers
+                return aValue - bValue;
+            } else {
+                // Compare as strings
+                return aValue.localeCompare(bValue);
+            }
+        });
+
+        // Reattach sorted rows to the table
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sortSelect = document.querySelector('select[name="sortBy"]');
+        sortSelect.addEventListener('change', sortTable);
+    });
+</script>
+{% endblock %}

@@ -2,14 +2,15 @@
 from typing import List
 from fastapi import APIRouter, Depends, Form
 from fastapi.responses import RedirectResponse
+import sqlalchemy
 from sqlalchemy.orm import Session
 from dependencies import get_db
 from classes import Manager
 from userManagement.businessLogic import password_hash
-import DB
-import DB.models
 from sqlalchemy.orm import Session
 from DB import CRUD
+from dependencies import get_db, getCurrentUser
+from DB.models import User
 
 #This is the router for the userManagement module
 router = APIRouter()
@@ -23,55 +24,44 @@ def newUser(
     lName: str = Form(...),
     startDate: str = Form(...),
     role: str = Form(...),
-    securityQuestion: str = Form(...),
-    securityAnswer: str = Form(...),
     password: str = Form(...),
     firstLogin: str = Form("yes"),
     db: Session = Depends(get_db)
-): #takes in form data and creates a new employee object
-    newEmp = DB.models.Employee(
+): #takes in form data and creates a new user object
+    newEmp = User(
         EIN = EIN, 
         fName = fName, 
         lName = lName,
         startDate = startDate, 
         role = role,
-        securityQuestion = securityQuestion, 
-        securityAnswer = securityAnswer, 
         password = password_hash(password),
         firstLogin = firstLogin
         )
+    
     #uses the Manager class to create a new user
-    message = Manager.addUser(db, newEmp)
-    if message is None:
-        message = "Registration failed: Unknown error."
-            #If registration is unsuccessful, redirect to create new user page with error message or success message
+    try:
+        message = Manager.addUser(db, newEmp)
+        if message is None:
+            message = "Registration failed: Unknown error."
+                #If registration is unsuccessful, redirect to create new user page with error message or success message
+    except:
+        message = f"EIN already exists. Please try again."
     return RedirectResponse(url=f"/createUser?message={message}", status_code=303)
 
 @router.post("/editUser")
 #This route is used to update an existing user
 def editUser(
     EIN: int = Form(...),
-    fName: str = Form(...),
-    lName: str = Form(...),
     startDate: str = Form(...),
     role: str = Form(...),
-    securityQuestion: str = Form(...),
-    securityAnswer: str = Form(...),
-    password: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    update = DB.models.Employee(
-        EIN = EIN, 
-        fName = fName, 
-        lName = lName,
+    update = User(
         startDate = startDate, 
         role = role,
-        securityQuestion = securityQuestion, 
-        securityAnswer = securityAnswer, 
-        password = password_hash(password),
         )
     # Update the user in the database
-    message = CRUD.updateUser(db, EIN, update)
+    message = CRUD.CRUD.updateUser(db, EIN, update)
     if message is None:
         message = "Update failed: Unknown error."
     else:
@@ -84,7 +74,7 @@ def deleteUser(EIN: List[int] = Form(...),db: Session = Depends(get_db)):
     # Delete the user from the database
     deleteMessage = ""
     for ein in EIN:
-        message = CRUD.removeUser(db, ein)
+        message = CRUD.CRUD.removeUser(db, ein)
         if message is None:
             deleteMessage += f"Failed to delete EIN {ein}. "
         else:
@@ -94,8 +84,23 @@ def deleteUser(EIN: List[int] = Form(...),db: Session = Depends(get_db)):
 @router.post("/getUsers")
 #This route is used to get all users
 def getUsers(db: Session = Depends(get_db)):
-    employee = CRUD.getUsers(db)
-    if employee is None:
-        employee = "No users found."
-    return RedirectResponse(url=f"/userManagement?employee={employee}", status_code=303)
+    user = CRUD.CRUD.getUsers(db)
+    if user is None:
+        user = "No users found."
+    return RedirectResponse(url=f"/userManagement?user={user}", status_code=303)
+
+#Endpoint to set first time login credentials
+@router.post("/register")
+def register(
+    newPassword: str = Form(...), 
+    securityQuestion: str = Form(...), 
+    securityAnswer: str = Form(...),
+    db: Session = Depends(get_db), 
+    user: User = Depends(getCurrentUser)):
+    password = password_hash(newPassword)
+    securityQuestion = securityQuestion
+    securityAnswer = securityAnswer
+    EIN = user.EIN
+    CRUD.CRUD.registerUser(db, EIN, password, securityQuestion, securityAnswer)
+    return RedirectResponse(url="/bidMangament", status_code=303)
 

@@ -9,12 +9,10 @@ from dependencies import get_db
 from fastapi import Depends, Form
 
 #Hashes password with bcrypt algorithm
-def password_hash(password: str):
+def password_hash(password: str) -> str:
     salt = bcrypt.gensalt(rounds=12)
-    bytes = password.encode('utf-8')
-    hashed = bcrypt.hashpw(bytes, salt)
-
-    return hashed
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')  
 
 #This function adds a user to the database
 def addUser(db, newEmp):
@@ -22,24 +20,25 @@ def addUser(db, newEmp):
     return message
 
 #This function updates a user in the database
-def updateUser(db, EIN: int, update: DB.models.Employee):
-    message = CRUD.updateUser(db, EIN, update)
+def updateUser(db, EIN: int, update: DB.models.User):
+    message = CRUD.CRUD.updateUser(db, EIN, update)
     if message is None:
         message = "Update failed: Unknown error."
 
 #This function removes a user from the database
 def removeUser(db, EIN):
-    message = CRUD.removeUser(db, EIN)
+    message = CRUD.CRUD.removeUser(db, EIN)
     if message is None:
         message = "Removal failed: Unknown error."
 
 #This function retrieves all users from the database
 def getUsers(db):
-    employee = CRUD.getUsers(db)
+    employee = CRUD.CRUD.getUsers(db)
     return employee
 
 classes.Manager.removeUser = removeUser
 classes.Manager.addUser = addUser
 classes.Manager.editUser = updateUser
 classes.Manager.getUsers = getUsers
+
 

@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from fastapi import Form, Query
 import classes
-class EmployeeCreate(BaseModel):
+
+class UserCreate(BaseModel):
     EIN: int
     fName: str 
     lName: str
@@ -12,4 +13,12 @@ class EmployeeCreate(BaseModel):
     password: str 
     firstLogin: str 
 
+class UserLogin(BaseModel):
+    EIN: str
+    role: str
+    firstLogin: str
+    disabled: bool
+
+class UserInDB(UserLogin):
+    hashed_password: str
 

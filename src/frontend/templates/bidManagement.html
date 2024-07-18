@@ -18,48 +18,56 @@
     </nav>
 </div>
 <div class="user-list-container">
-    <h2>User Management</h2>
+    <h2>Bid Management</h2>
     <div class="controls">
-        <form action="/createUser" method="get" style="display: inline;">
-            <button type="submit" class="action-button">Create User</button>
+        <form action="/createBid" method="get" style="display: inline;">
+            <button type="submit" class="action-button">Create Bid</button>
         </form>
-        <form action="/updateUser" method="get" id="updateForm" style="display: inline;">
-            <input type="hidden" name="EIN" id="updateEIN">
-            <button type="submit" class="action-button" onclick="copySelectedEIN('updateEIN')">Update</button>
+        <form action="/editBid" method="get" id="updateForm" style="display: inline;">
+            <input type="hidden" name="bidNum" id="bidNum">
+            <button type="submit" class="action-button" onclick="copySelectedBidNum('bidNum')">Update</button>
         </form>
-        <form action="/deleteUser" method="post" id="deleteForm" style="display: inline;">
+        <form action="/removeBid" method="post" id="deleteForm" style="display: inline;">
             <button type="submit" class="action-button" onclick="copySelectedCheckboxes()">Delete</button>
         </form>
+        <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">
+            <input type="hidden" name="bidNum" id="viewBidNum">
+            <button type="submit" class="action-button" onclick="copySelectedBidNum('viewBidNum')">View Description</button>
+        </form>
         <select name="sortBy" class="action-button" onchange="sortTable()">
-            <option value="EIN">Sort by Employee ID</option>
-            <option value="startDate">Sort by Start Date</option>
-            <option value="role">Sort by Role</option>
+            <option value="bidNumber">Sort by Bid Number</option>
+            <option value="postDate">Sort by Post Date</option>
+            <option value="status">Sort by Status</option>
         </select>
     </div>
-    <form id="userForm">
+    <form id="bidForm">
         <table>
             <thead>
                 <tr>
                     <th></th>
-                    <th>Employee ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Start Date</th>
-                    <th>Role</th>
-                    <th>Current Bid</th>
+                    <th>Bid Number</th>
+                    <th>Status</th>
+                    <th>Post Date</th>
+                    <th>Close Date</th>
+                    <th>Description</th>
+                    <th>Hours</th>
+                    <th>Awarded</th>
+                    <th>Days Off</th>
                 </tr>
             </thead>
             <tbody>
-                {% if users %}
-                    {% for user in users %}
+                {% if bids %}
+                    {% for bid in bids %}
                     <tr>
-                        <td><input type="checkbox" name="EIN" value="{{ user.EIN }}"></td>
-                        <td data-sort="EIN">{{ user.EIN }}</td>
-                        <td>{{ user.fName }}</td>
-                        <td data-sort="lName">{{ user.lName }}</td>
-                        <td data-sort="startDate">{{ user.startDate }}</td>
-                        <td data-sort="role">{{ user.role }}</td>
-                        <td data-sort="currentBid">{{ user.currentBid }}</td>
+                        <td><input type="checkbox" name="bidNum" value="{{ bid.bidNum }}"></td>
+                        <td data-sort="bidNumber">{{ bid.bidNum }}</td>
+                        <td>{{ bid.status }}</td>
+                        <td data-sort="postDate">{{ bid.postDate }}</td>
+                        <td data-sort="closeDate">{{ bid.closeDate }}</td>
+                        <td>{{ bid.description }}</td>
+                        <td>{{ bid.hours }}</td>
+                        <td>{{ bid.awarded }}</td>
+                        <td>{{ bid.daysOff }}</td>
                     </tr>
                     {% endfor %}
                 {% endif %}
@@ -70,55 +78,55 @@
 
 <script>
     function copySelectedCheckboxes() {
-        const userForm = document.getElementById('userForm');
+        const bidForm = document.getElementById('bidForm');
         const deleteForm = document.getElementById('deleteForm');
         
         // Clear existing hidden inputs in deleteForm
-        while (deleteForm.querySelector('input[name="EIN"]')) {
-            deleteForm.querySelector('input[name="EIN"]').remove();
+        while (deleteForm.querySelector('input[name="bidNum"]')) {
+            deleteForm.querySelector('input[name="bidNum"]').remove();
         }
         
         // Copy selected checkboxes to deleteForm as hidden inputs
-        const checkboxes = userForm.querySelectorAll('input[name="EIN"]:checked');
+        const checkboxes = bidForm.querySelectorAll('input[name="bidNum"]:checked');
         if (checkboxes.length === 0) {
-            alert("Please select a user to delete.");
+            alert("Please select a bid to delete.");
             event.preventDefault();
         } else {
             checkboxes.forEach(checkbox => {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'EIN';
-            hiddenInput.value = checkbox.value;
-            deleteForm.appendChild(hiddenInput);
-        });
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'bidNum';
+                hiddenInput.value = checkbox.value;
+                deleteForm.appendChild(hiddenInput);
+            });
         }
     }
 
-    function copySelectedEIN(hiddenInputId) {
-        const userForm = document.getElementById('userForm');
+    function copySelectedBidNum(hiddenInputId) {
+        const bidForm = document.getElementById('bidForm');
         const hiddenInput = document.getElementById(hiddenInputId);
         
         // Get selected checkbox
-        const selectedCheckbox = userForm.querySelector('input[name="EIN"]:checked');
+        const selectedCheckbox = bidForm.querySelector('input[name="bidNum"]:checked');
         if (selectedCheckbox) {
             hiddenInput.value = selectedCheckbox.value;
         } else {
-            alert("Please select a user to update.");
+            alert("Please select a bid to update.");
             event.preventDefault();
         }
     }
 
     function sortTable() {
         const sortBy = document.querySelector('select[name="sortBy"]').value;
-        const userForm = document.getElementById('userForm');
-        const tbody = userForm.querySelector('tbody');
+        const bidForm = document.getElementById('bidForm');
+        const tbody = bidForm.querySelector('tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
         rows.sort((a, b) => {
             const aValue = a.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
             const bValue = b.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
             
-            if (sortBy === 'startDate') {
+            if (sortBy === 'postDate' || sortBy === 'closeDate') {
                 // Parse dates for comparison
                 return new Date(aValue) - new Date(bValue);
             } else if (!isNaN(aValue) && !isNaN(bValue)) {

@@ -1,0 +1,22 @@
+{%extends "base.html"%} 
+{% block content %}
+<div class="header">
+    <h2>Employee Bidding System - First Time Login</h2>
+</div>
+<div class="form-container">
+    <h2>Set New Password and Security Question</h2>
+    <form action="/register" method="post">
+        <h3>EIN: {{ EIN }}</h3>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        <br>
+        <label for="securityQuestion">Security Question:</label>
+        <input type="text" id="securityQuestion" name="securityQuestion" required>
+        <br>
+        <label for="securityAnswer">Security Answer:</label>
+        <input type="text" id="securityAnswer" name="securityAnswer" required>
+        <br>
+        <button type="submit">Update</button>
+    </form>
+</div>
+{% endblock %}

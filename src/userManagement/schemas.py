@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class Employee(BaseModel):
+class User(BaseModel):
     EIN: int
     fName: str
     lName: str
@@ -12,7 +12,6 @@ class Employee(BaseModel):
     password: Optional[str] = None
     firstLogin: Optional[str] = "yes"
     currentBid: Optional[str] = "No Bid"
-
+    disabled: bool = False
     class Config:
-        orm_mode = True
         from_attributes = True

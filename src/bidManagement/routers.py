@@ -1,0 +1,62 @@
+from typing import List
+from fastapi import APIRouter, Depends, Form
+from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
+from dependencies import get_db
+from classes import Bids
+from DB import models
+from bidManagement import businessLogic
+
+#This is the router for the bidManagement module
+router = APIRouter()
+
+@router.post("/newBid")
+def newBid(
+    bidNum: int = Form(...),
+    status: str = Form(...),
+    postDate: str = Form(...),
+    closeDate: str = Form(...),
+    description: str = Form(...),
+    hours: int = Form(...),
+    awarded: bool = Form(...),
+    daysOff: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    newBid = models.Bids(
+        bidNum = bidNum,
+        status = status,
+        postDate = postDate,
+        closeDate = closeDate,
+        description = description,
+        hours = hours,
+        awarded = awarded,
+        daysOff = daysOff
+    )
+    message = businessLogic.createBid(db, newBid)
+    return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
+
+@router.post("/updateBid")
+def updateBid(
+    bidNum: int = Form(...),
+    status: str = Form(...),
+    postDate: str = Form(...),
+    closeDate: str = Form(...),
+    description: str = Form(...),
+    hours: int = Form(...),
+    awarded: bool = Form(...),
+    daysOff: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    bid = models.Bids(
+        bidNum = bidNum,
+        status = status,
+        postDate = postDate,
+        closeDate = closeDate,
+        description = description,
+        hours = hours,
+        awarded = awarded,
+        daysOff = daysOff
+    )
+    message = businessLogic.updateBid(db, bidNum, bid)
+    return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
+
