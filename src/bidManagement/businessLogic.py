@@ -28,6 +28,12 @@ def getBid(db: Session, bidNum: int):
     bid = CRUD.CRUD.getBid(db, bidNum)
     return bid
 
+def checkExistingBid(db: Session, bidNum: int, EIN: int):
+    return db.query(DB.models.Bids).filter(DB.models.bidSelections.bidNum == bidNum, DB.models.bidSelections.EIN == EIN).first()
+
+def placeBid(db: Session, bidNum: int, EIN: int):
+    bid = CRUD.CRUD.placeBid(db, bidNum, EIN ) 
+
 classes.Manager.createBid = createBid
 classes.Manager.editBid = updateBid
 classes.Manager.removeBid = removeBid   

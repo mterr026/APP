@@ -12,7 +12,45 @@
     </nav>
 </div>
 <div class="user-list-container">
-    <h2>Bid View</h2>
+    <h2>My Bids</h2>
+    <form id="employeeBidForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bid Number</th>
+                    <th>Status</th>
+                    <th>Post Date</th>
+                    <th>Close Date</th>
+                    <th>Description</th>
+                    <th>Hours</th>
+                    <th>Awarded</th>
+                    <th>Days Off</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employeeBids %}
+                    {% for bid in employeeBids %}
+                    <tr>
+                        <td>{{ bid.bidNum }}</td>
+                        <td>{{ bid.status }}</td>
+                        <td>{{ bid.postDate }}</td>
+                        <td>{{ bid.closeDate }}</td>
+                        <td>{{ bid.description }}</td>
+                        <td>{{ bid.hours }}</td>
+                        <td>{{ bid.awarded }}</td>
+                        <td>{{ bid.daysOff }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8">No bids placed.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+
+    <h2>All Bids</h2>
     <div class="controls">
         <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">
             <input type="hidden" name="bidNum" id="viewBidNum">
@@ -54,6 +92,10 @@
                         <td>{{ bid.daysOff }}</td>
                     </tr>
                     {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9">No bids available.</td>
+                    </tr>
                 {% endif %}
             </tbody>
         </table>

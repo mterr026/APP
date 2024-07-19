@@ -5,12 +5,15 @@
     <h2>Bid Details</h2>
     <nav class="navbar">
         <div class="navbar-container">
-            <form action="/bidManagement" method="get" style="display: inline;">
-                <button type="submit" class="nav-button">Back to Bid Management</button>
-            </form>
+            <div class="navbar-container">
+                <button type="button" class="nav-button" onclick="history.back()">Back</button>
+            </div>
         </div>
     </nav>
 </div>
+{% if message %}
+<h3>{{ message }}</h3>
+{% endif %}
 <div class="bid-details-container">
     <h2>Bid Number: {{ bids.bidNum }}</h2>
     <p><strong>Status:</strong> {{ bids.status }}</p>
@@ -21,12 +24,16 @@
     <p><strong>Hours:</strong> {{ bids.hours }}</p>
     <p><strong>Awarded:</strong> {{ bids.awarded }}</p>
     <p><strong>Days Off:</strong> {{ bids.daysOff }}</p>
-
-    {% if bids.closeDate < current_date %}
-    <form action="/someAction" method="post" style="display: inline;">
+    {% if currentUser.role == 'employee' and bids.closeDate >= current_date and bids.postDate >= current_date %}
+    <form action="/placeBid" method="post" style="display: inline;">
         <input type="hidden" name="bidNum" value="{{ bids.bidNum }}">
-        <button type="submit" class="action-button">Perform Action</button>
+        <input type="hidden" name="EIN" value="{{ currentUser.EIN }}">
+        <input type="hidden" name="id" value="{{ bids.bidNum + 10 }}">
+        <button type="submit" class="action-button">Place Bid</button>
     </form>
-    {% endif %}
+    
+    {% else %}
+    <button type="button" class="nav-button" onclick="history.back()">Back</button>
+    {% endif %} 
 </div>
 {% endblock %}

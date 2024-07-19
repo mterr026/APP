@@ -149,6 +149,19 @@ class CRUD:
         bids = db.query(DB.models.Bids).filter(DB.models.Bids.awarded == False).all()
         return [BidsSchema(bid) for bid in bids]
         
-    #add employee selection
-    def employeeSelection(db: Session, EIN: int, postID: int):
-        return None
+    #add employee bid selection
+    def placeBid(db: Session, bidNum: int, EIN: int, postingID):
+        # Create a new bid selection
+        newBidSelection = DB.models.bidSelections(
+            id = postingID,
+            EIN = EIN,
+            bidNum = bidNum
+        )
+        # Add the new bid selection to the database
+        db.add(newBidSelection)
+        db.commit()
+        db.refresh(newBidSelection)
+        return "BID PLACEMENT SUCCESSFUL"
+
+    def getEmployeeBids(db: Session, EIN: int):
+         return db.query(DB.models.Bids).join(DB.models.bidSelections).filter(DB.models.bidSelections.EIN == EIN).all()

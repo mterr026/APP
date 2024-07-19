@@ -67,3 +67,19 @@ def deleteBid(
 ):
     message = businessLogic.removeBid(db, bidNum)
     return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
+
+@router.post("/placeBid")
+def placeBid(
+    bidNum: int = Form(...),
+    EIN: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    # Check if the bid already exists for the given EIN and bidNum
+    existingBid = businessLogic.checkExistingBid(db, EIN)
+    if existingBid:
+        message = "You have already placed a bid on this posting."
+    else:
+        businessLogic.placeBid(db, bidNum, EIN, postingID)
+        message = "You have Placed this bid"
+    
+    return RedirectResponse(url=f"/bidDetails?bidNum={bidNum}&message={message}", status_code=303)

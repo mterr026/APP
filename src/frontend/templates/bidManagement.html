@@ -30,10 +30,7 @@
         <form action="/deleteBid" method="post" id="deleteForm" style="display: inline;">
             <button type="submit" class="action-button" onclick="copySelectedCheckboxes()">Delete</button>
         </form>
-        <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">
-            <input type="hidden" name="bidNum" id="viewBidNum">
-            <button type="submit" class="action-button" onclick="copySelectedBidNum('viewBidNum')">View Description</button>
-        </form>
+        
         <select name="sortBy" class="action-button" onchange="sortTable()">
             <option value="bidNumber">Sort by Bid Number</option>
             <option value="postDate">Sort by Post Date</option>

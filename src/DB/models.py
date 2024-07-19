@@ -1,5 +1,5 @@
 #SQLAlchemy models
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 from DB.database import Base
 
@@ -30,10 +30,13 @@ class Bids(Base):
 
 class bidSelections(Base):
     __tablename__ = "bidSelections"
-    id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    EIN = Column(Integer, ForeignKey("user.EIN"), nullable=False)
-    bidNum = Column(Integer, ForeignKey("bids.bidNum"), nullable=False)
+    id = Column(Integer, nullable=False, unique=True, index=True)
+    EIN = Column(Integer, ForeignKey("user.EIN"), primary_key=True, nullable=False)
+    bidNum = Column(Integer, ForeignKey("bids.bidNum"), primary_key=True, nullable=False)
 
+    __table_args__ = (
+    PrimaryKeyConstraint('EIN', 'bidNum'),
+    )
 
 user = relationship("User", back_populates="bids")
 bids = relationship("BidSelections", back_populates="user")
