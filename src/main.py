@@ -19,10 +19,6 @@ load_dotenv()
 # Create the FastAPI app instance 
 app = FastAPI()
 
-@app.on_event("startup")
-async def startup_event():
-    secret_key = os.getenv("SECRET_KEY", "backupSecretKey")
-    print(f"SECRET_KEY: {secret_key}")
 # Create the static files route for the frontend
 app.mount("/static/", StaticFiles(directory="frontend/static/"), name="static")
 

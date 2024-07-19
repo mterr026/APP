@@ -43,13 +43,13 @@ def createUser(request: Request, currentUser: User = Depends(getCurrentUser)):
     EIN = currentUser.EIN
     if currentUser.firstLogin == "no":
         if currentUser.role == "manager":
-            return RedirectResponse(url="/userManagement")
+            return RedirectResponse(url="/awardBid")
         elif currentUser.role == "employee":
             return RedirectResponse(url="/employeeBidView")
         elif currentUser.role == "steward":
             return RedirectResponse(url="/employeeBidView")
     else:
-        return templates.TemplateResponse("firstLogin.html", {"request": request, "EIN": EIN})
+        return templates.TemplateResponse("firstLogin.html", {"request": request, "EIN": EIN, "currentUser": currentUser})
     
 @router.get("/bidManagement")
 def bidManagement(request: Request, db: Session = Depends(get_db), currentUser: str = Depends(getCurrentActiveUser)):
@@ -77,4 +77,5 @@ def bidDetails(request: Request, bidNum: int = Query(None), db: Session = Depend
 def employeeBidView(request: Request, db: Session = Depends(get_db), currentUser: str = Depends(getCurrentActiveUser)):
     bids = CRUD.CRUD.getBids(db)
     employeesSelections = CRUD.CRUD.getEmployeeBids(db, currentUser.EIN)
-    return templates.TemplateResponse("employeeView.html", {"request": request, "bids": bids, "employeeBids": employeesSelections})
+    return templates.TemplateResponse("employeeView.html", {"request": request, "bids": bids, "employeeBids": employeesSelections, "currentUser": currentUser})
+

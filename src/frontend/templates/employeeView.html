@@ -11,7 +11,9 @@
         </div>
     </nav>
 </div>
+
 <div class="user-list-container">
+    {% if currentUser.role == 'employee' %}
     <h2>My Bids</h2>
     <form id="employeeBidForm">
         <table>
@@ -22,7 +24,7 @@
                     <th>Post Date</th>
                     <th>Close Date</th>
                     <th>Description</th>
-                    <th>Hours</th>
+                    <th>Start Time</th>
                     <th>Awarded</th>
                     <th>Days Off</th>
                 </tr>
@@ -49,7 +51,7 @@
             </tbody>
         </table>
     </form>
-
+    {% endif %} 
     <h2>All Bids</h2>
     <div class="controls">
         <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">

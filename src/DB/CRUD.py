@@ -164,3 +164,5 @@ class CRUD:
 
     def getEmployeeBids(db: Session, EIN: int):
          return db.query(DB.models.Bids).join(DB.models.bidSelections).filter(DB.models.bidSelections.EIN == EIN).all()
+
+    

@@ -36,6 +36,17 @@ def getUsers(db):
     employee = CRUD.CRUD.getUsers(db)
     return employee
 
+def getUsersWithBids(db: Session):
+    users = db.query(DB.models.User).all()
+    for user in users:
+        currentBid = db.query(DB.models.Bids).filter(DB.models.Bids.awarded == f"{user.fName} {user.lName}").first()
+        if currentBid:
+            user.currentBid = f"Bid Number: {currentBid.bidNum}"
+        else:
+            user.currentBid = "No Bid"
+    return users
+
+
 classes.Manager.removeUser = removeUser
 classes.Manager.addUser = addUser
 classes.Manager.editUser = updateUser

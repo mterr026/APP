@@ -83,3 +83,9 @@ def placeBid(
         message = "You have Placed this bid"
     
     return RedirectResponse(url=f"/bidDetails?bidNum={bidNum}&message={message}", status_code=303)
+
+#everytime a manager logs in, this route will perform bid awarding. later it could be automated to run on a timed basis
+@router.get("/awardBid")
+def awardBid(db: Session = Depends(get_db)):
+    businessLogic.awardBid(db)
+    return RedirectResponse(url="/userManagement")
