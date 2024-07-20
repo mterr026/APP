@@ -1,11 +1,12 @@
-from datetime import timedelta, datetime, timezone
+# This file contains the routers for the auth module and is responsible for handling the HTTP requests and responses.
+from datetime import timedelta
 from fastapi.responses import RedirectResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from dependencies import get_db
 from auth.businessLogic import ACCESS_TOKEN_EXPIRE_MINUTES, authenticateUser, createAccessToken
-from DB.models import User
+from fastapi.responses import RedirectResponse
 import os
 
 #This is the router for the auth module
@@ -23,6 +24,7 @@ def loginForAccessToken(response: Response, formData: OAuth2PasswordRequestForm 
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
 
     #Creates an access token for the user and sets it as a cookie with expiration time
     accessTokenExpires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

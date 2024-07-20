@@ -9,9 +9,9 @@ from DB.schemas import User as UserSchema, Bids as BidsSchema, Postings as Posti
 
 #This class contains the CRUD operations for the database
 class CRUD:
-    #This function creates a new user in the database
+    # Creates a new user in the database
     def creatUser(db: Session, newUser: DB.models.User):
-    #Tries to add the new users to the database
+    # Tries to add the new users to the database
         db.add(newUser)
         db.commit()
         db.refresh(newUser)
@@ -48,24 +48,24 @@ class CRUD:
             db.delete(user)
             db.commit()
             return "REMOVAL SUCCESSFUL"
-    #retrieves all users from the database
+    # Retrieves all users from the database
     def getUsers(db: Session):
         # Retrieve all users from the database
         users = db.query(DB.models.User).all()
         return [schemas.User.from_orm(user) for user in users]
 
-    #retrieves a user from the database
+    # Retrieves a user from the database
     def getUser(db: Session, EIN: int):
         # Retrieve the user with the specified EIN
         user = db.query(DB.models.User).filter(DB.models.User.EIN == EIN).first()
         if not user:
             return None
         return schemas.User.from_orm(user)
-    #retrieves a user from the database
+    # Retrieves a user from the database
     def getUserById(db: Session, EIN: int):
             return db.query(DB.models.User).filter(DB.models.User.EIN == EIN).first()
 
-    #sets new credentials during first login for a user
+    # Sets new credentials during first login for a user
     def registerUser(db: Session, EIN: int, Password: str, SecurityQuestion: str, SecurityAnswer: str):
         # Retrieve the user with the specified EIN
         user = db.query(DB.models.User).filter(DB.models.User.EIN == EIN).first()
@@ -119,35 +119,20 @@ class CRUD:
             db.delete(bid)
             db.commit()
             return "REMOVAL SUCCESSFUL"
-
+    # Retrieves all bids from the database
     def getBids(db: Session):
         bids = db.query(DB.models.Bids).all()
         return [BidsSchema.from_orm(bid) for bid in bids]
-
+    # Retrieves a bid from the database
     def getBid(db: Session, bidNum: int):
         # Retrieve the bid with the specified bid number
         bid = db.query(DB.models.Bids).filter(DB.models.Bids.bidNum == bidNum).first()
         if not bid:
             return None
         return BidsSchema.from_orm(bid)
-
+    # Retrieves a bid from the database based on the bid number
     def getBidById(db: Session, bidNum: int):
         return db.query(DB.models.Bids).filter(DB.models.Bids.bidNum == bidNum).first()
-
-    def getClosedBids(db: Session):
-        # Retrieve all closed bids from the database
-        bids = db.query(DB.models.Bids).filter(DB.models.Bids.status == "closed").all()
-        return [BidsSchema(bid) for bid in bids]
-
-    def getAwardedBids(db: Session):
-        # Retrieve all awarded bids from the database
-        bids = db.query(DB.models.Bids).filter(DB.models.Bids.awarded == True).all()
-        return [BidsSchema(bid) for bid in bids]
-
-    def getUnawardedBids(db: Session):
-        # Retrieve all unawarded bids from the database
-        bids = db.query(DB.models.Bids).filter(DB.models.Bids.awarded == False).all()
-        return [BidsSchema(bid) for bid in bids]
         
     #add employee bid selection
     def placeBid(db: Session, bidNum: int, EIN: int):
@@ -161,8 +146,13 @@ class CRUD:
         db.commit()
         db.refresh(newBidSelection)
         return "BID PLACEMENT SUCCESSFUL"
-
+    
+    # Used to retireve bids that the employee has selected and is awaiting awarding 
     def getEmployeeBids(db: Session, EIN: int):
          return db.query(DB.models.Bids).join(DB.models.bidSelections).filter(DB.models.bidSelections.EIN == EIN).all()
-
     
+    # Cancels the bid request and removes it from the table bidSelections
+    def cancelBidRequest(db: Session, bidNum: int, EIN: int):
+        db.query(DB.models.bidSelections).filter(DB.models.bidSelections.bidNum == bidNum, DB.models.bidSelections.EIN == EIN).delete()
+        db.commit()
+        return "BID CANCELLED"

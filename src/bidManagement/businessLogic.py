@@ -1,39 +1,43 @@
+# This file contains the business logic for the bid management module
 import DB
-from fastapi import Depends
 from datetime import datetime
 from DB import schemas as DB
 import DB.models
 from DB import CRUD
 from sqlalchemy.orm import Session
 import classes
-from dependencies import get_db
 
+# Function to create a new bid
 def createBid(db: Session, newBid: DB.models.Bids):
     message = CRUD.CRUD.createBid(db, newBid)
     return message
 
+# Function to update a bid
 def updateBid(db: Session, bidNum: int, updateBid: DB.models.Bids):
     message = CRUD.CRUD.updateBid(db, bidNum, updateBid)
     return message
-
+# Function to remove a bid
 def removeBid(db: Session, bidNum: int):
     message = CRUD.CRUD.removeBid(db, bidNum)
     return message
-
+# Function to get all bids
 def getBids(db: Session):
     bids = CRUD.CRUD.getBids(db)
     return bids
 
+# Function to get a specific bid
 def getBid(db: Session, bidNum: int):
     bid = CRUD.CRUD.getBid(db, bidNum)
     return bid
 
+#checks if a bid exists based on the bid number and EIN to ensure one user can't place multiple requests on one bid
 def checkExistingBid(db: Session, bidNum: int, EIN: int):
     return db.query(DB.models.Bids).filter(DB.models.bidSelections.bidNum == bidNum, DB.models.bidSelections.EIN == EIN).first()
-
+# Function to place a bid
 def placeBid(db: Session, bidNum: int, EIN: int):
     bid = CRUD.CRUD.placeBid(db, bidNum, EIN ) 
 
+# awards the bid to the employee with the oldest start date
 def awardBid(db: Session):
     current_date = datetime.now().strftime("%Y-%m-%d")
     closed_bids = db.query(DB.models.Bids).filter(DB.models.Bids.closeDate < current_date, DB.models.Bids.status != 'awarded').all()
@@ -42,7 +46,7 @@ def awardBid(db: Session):
         # Get all selections for the bid
         selections = db.query(DB.models.bidSelections).filter(DB.models.bidSelections.bidNum == bid.bidNum).all()
         if selections:
-            # Find the employee with the oldest start date who hasn't been awarded a bid yet
+            # Find the employee with the oldest start date and award the bid to them
             selectedEmployee = None
             oldestStartDate = None
             for selection in selections:
@@ -68,10 +72,16 @@ def awardBid(db: Session):
                 
                 db.commit()
 
+# Function to cancel a bid request
+def cancelBidRequest(db: Session, bidNum: int, EIN: int):
+    CRUD.CRUD.cancelBidRequest(db, bidNum, EIN)
 
 
 classes.Manager.createBid = createBid
 classes.Manager.editBid = updateBid
 classes.Manager.removeBid = removeBid   
 classes.User.viewBidS = getBids
+classes.Bids.awardBid = awardBid
+classes.Employee.selectBid = placeBid
+
 

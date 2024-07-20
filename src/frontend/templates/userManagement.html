@@ -59,7 +59,7 @@
                         <td data-sort="lName">{{ user.lName }}</td>
                         <td data-sort="startDate">{{ user.startDate }}</td>
                         <td data-sort="role">{{ user.role }}</td>
-                        <td data-sort="currentBid">{{ user.currentBid }}</td>
+                        <td data-sort="currentBid">{{ userBidMap[user.EIN] }}</td>
                     </tr>
                     {% endfor %}
                 {% endif %}
@@ -69,6 +69,7 @@
 </div>
 
 <script>
+    // this script is used to handle the table of users and allow for sorting, updating, and deleting users
     function copySelectedCheckboxes() {
         const userForm = document.getElementById('userForm');
         const deleteForm = document.getElementById('deleteForm');

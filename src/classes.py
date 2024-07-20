@@ -29,9 +29,6 @@ class User:
     def viewBidS(self):
         pass
     
-    def sortBid(self):
-        pass
-    
 class Employee(User):
 
     def selectBid(self):

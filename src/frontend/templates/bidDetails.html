@@ -25,7 +25,7 @@
     <p><strong>Awarded:</strong> {{ bids.awarded }}</p>
     <p><strong>Days Off:</strong> {{ bids.daysOff }}</p>
     
-    {% if currentUser.role == 'employee' and bids.closeDate >= current_date and bids.postDate >= current_date %}
+    {% if currentUser.role == 'employee' and bids.closeDate >= current_date and bids.postDate <= current_date %}
     <form action="/placeBid" method="post" style="display: inline;">
         <input type="hidden" name="bidNum" value="{{ bids.bidNum }}">
         <input type="hidden" name="EIN" value="{{ currentUser.EIN }}">

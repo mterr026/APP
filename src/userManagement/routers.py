@@ -2,7 +2,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, Form
 from fastapi.responses import RedirectResponse
-import sqlalchemy
 from sqlalchemy.orm import Session
 from dependencies import get_db
 from classes import Manager
@@ -12,10 +11,10 @@ from DB import CRUD
 from dependencies import get_db, getCurrentUser
 from DB.models import User
 
-#This is the router for the userManagement module
+#sets an instance of the APIRouter class to the variable router
 router = APIRouter()
 
-#This route is used to create a new user
+# endpoint to create a new user
 @router.post("/addUser")
 def newUser(
     #Parameters taken from form data
@@ -48,8 +47,8 @@ def newUser(
         message = f"EIN already exists. Please try again."
     return RedirectResponse(url=f"/createUser?message={message}", status_code=303)
 
+# endpoint to update a user
 @router.post("/editUser")
-#This route is used to update an existing user
 def editUser(
     EIN: int = Form(...),
     startDate: str = Form(...),
@@ -69,7 +68,8 @@ def editUser(
     return RedirectResponse(url=f"/updateUser?message={message}", status_code=303)
 
 @router.post("/deleteUser")
-#This route is used to delete a user
+
+#endpoint to delete a user
 def deleteUser(EIN: List[int] = Form(...),db: Session = Depends(get_db)):
     # Delete the user from the database
     deleteMessage = ""
@@ -81,6 +81,7 @@ def deleteUser(EIN: List[int] = Form(...),db: Session = Depends(get_db)):
             deleteMessage += f"Successfully deleted EIN {ein}. "  
     return RedirectResponse(url=f"/userManagement?deleteMessage={deleteMessage}", status_code=303)
 
+#Endpoint to get all users
 @router.post("/getUsers")
 #This route is used to get all users
 def getUsers(db: Session = Depends(get_db)):

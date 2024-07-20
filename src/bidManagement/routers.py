@@ -3,14 +3,15 @@ from fastapi import APIRouter, Depends, Form
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from dependencies import get_db
-from classes import Bids
 from DB import models
 from bidManagement import businessLogic
 
-#This is the router for the bidManagement module
+# creates the instance of the APIRouter 
 router = APIRouter()
 
+#endpoint for creating a new bid
 @router.post("/newBid")
+#this takes the form data and enters it into the database as a new bid
 def newBid(
     bidNum: int = Form(...),
     status: str = Form(...),
@@ -33,8 +34,10 @@ def newBid(
         daysOff = daysOff
     )
     message = businessLogic.createBid(db, newBid)
+    #redirects to the bidManagement page with a message
     return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
 
+#endpoint for updating a bid
 @router.post("/updateBid")
 def updateBid(
     bidNum: int = Form(...),
@@ -68,6 +71,7 @@ def deleteBid(
     message = businessLogic.removeBid(db, bidNum)
     return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
 
+
 @router.post("/placeBid")
 def placeBid(
     bidNum: int = Form(...),
@@ -89,3 +93,12 @@ def placeBid(
 def awardBid(db: Session = Depends(get_db)):
     businessLogic.awardBid(db)
     return RedirectResponse(url="/userManagement")
+
+@router.post("/cancelBidRequest")
+def cancelBidRequest(
+    bidNum: int = Form(...),
+    EIN: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    bid = businessLogic.cancelBidRequest(db, bidNum, EIN)
+    return RedirectResponse(url=f"/employeeBidView", status_code=303)

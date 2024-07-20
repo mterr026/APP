@@ -78,12 +78,12 @@
         const bidForm = document.getElementById('bidForm');
         const deleteForm = document.getElementById('deleteForm');
         
-        // Clear existing hidden inputs in deleteForm
+        // clears the deleteForm of any previous hidden inputs
         while (deleteForm.querySelector('input[name="bidNum"]')) {
             deleteForm.querySelector('input[name="bidNum"]').remove();
         }
         
-        // Copy selected checkboxes to deleteForm as hidden inputs
+        // copies the selected checkboxes to the deleteForm as hidden inputs
         const checkboxes = bidForm.querySelectorAll('input[name="bidNum"]:checked');
         if (checkboxes.length === 0) {
             alert("Please select a bid to delete.");
@@ -103,7 +103,7 @@
         const bidForm = document.getElementById('bidForm');
         const hiddenInput = document.getElementById(hiddenInputId);
         
-        // Get selected checkbox
+        // get the selected checkbox value
         const selectedCheckbox = bidForm.querySelector('input[name="bidNum"]:checked');
         if (selectedCheckbox) {
             hiddenInput.value = selectedCheckbox.value;
@@ -113,12 +113,14 @@
         }
     }
 
+    // sorts the table by the selected column
     function sortTable() {
         const sortBy = document.querySelector('select[name="sortBy"]').value;
         const bidForm = document.getElementById('bidForm');
         const tbody = bidForm.querySelector('tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
-
+        
+        // Sort rows based on the selected column
         rows.sort((a, b) => {
             const aValue = a.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
             const bValue = b.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
@@ -135,7 +137,7 @@
             }
         });
 
-        // Reattach sorted rows to the table
+        // reattach the sorted data to the table
         rows.forEach(row => tbody.appendChild(row));
     }
 

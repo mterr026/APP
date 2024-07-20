@@ -3,8 +3,16 @@
 {% block content %}
 <div class="header">
     <h2>Update Bid</h2>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <form action="/bidManagement" method="get" style="display: inline;">
+                <button type="submit" class="nav-button">Back</button>
+            </form>
+        </div>
+    </nav>
 </div>
 <div class="form-container">
+    {{ message }}
     <p>
         <span><h3 style="display: inline; color: white;">Bid Number:</h3> <span style="color: yellow; font-weight: bold;">{{bids.bidNum}}</span></span>
     </p>
@@ -12,32 +20,34 @@
         <input type="hidden" id="bidNum" name="bidNum" value="{{bids.bidNum}}">
         <div class="form-group">
             <label for="status">Status:</label>
-            <input type="text" id="status" name="status" required>
+            <input type="text" id="status" value="{{ bids.status}}" name="status" required>
         </div>
         <div class="form-group">
             <label for="postDate">Post Date:</label>
-            <input type="date" id="postDate" name="postDate" required>
+            <input type="date" id="postDate" value="{{ bids.postDate}}" name="postDate" required>
         </div>
         <div class="form-group">
             <label for="closeDate">Close Date:</label>
-            <input type="date" id="closeDate" name="closeDate" required>
+            <input type="date" id="closeDate" value="{{ bids.closeDate }}" name="closeDate" required>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
+            <textarea id="description" name="description" required>
+                {{ bids.description }}
+            </textarea>
         </div>
         <div class="form-group">
             <label for="hours">Start Time:</label>
-            <input type="number" id="hours" name="hours" required>
+            <input type="number" id="hours" value="{{ bids.hours}}" name="hours" required>
         </div>
         <div class="form-group">
             <label for="awarded">Awarded To:</label>
-                <input type="text" id="daysOff" name="awarded" required>
+                <input type="text" id="daysOff" value="{{ bids.awarded}}" name="awarded" required>
             </select>
         </div>
         <div class="form-group">
             <label for="daysOff">Days Off:</label>
-            <input type="text" id="daysOff" name="daysOff" required>
+            <input type="text" id="daysOff" value="{{ bids.daysOff}}" name="daysOff" required>
         </div>
         <div class="form-group">
             <button type="submit" class="action-button">Update Bid</button>

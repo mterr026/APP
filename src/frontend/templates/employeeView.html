@@ -14,11 +14,14 @@
 
 <div class="user-list-container">
     {% if currentUser.role == 'employee' %}
-    <h2>My Bids</h2>
-    <form id="employeeBidForm">
+    <h2>Employee Portal</h2>
+        <h2>My Bid Selections</h2>
+        <form action="/cancelBidRequest" method="post">
+            <button type="submit" class="action-button">Cancel Request</button>
         <table>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Bid Number</th>
                     <th>Status</th>
                     <th>Post Date</th>
@@ -30,9 +33,16 @@
                 </tr>
             </thead>
             <tbody>
+            
                 {% if employeeBids %}
                     {% for bid in employeeBids %}
                     <tr>
+                        {% if bid.status == 'vacant' %}
+                        <td><input type="checkbox" name="bidNum" value="{{ bid.bidNum }}"></td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        <input type="hidden" id="EIN" name="EIN" value="{{currentUser.EIN}}">
                         <td>{{ bid.bidNum }}</td>
                         <td>{{ bid.status }}</td>
                         <td>{{ bid.postDate }}</td>
@@ -45,13 +55,17 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="8">No bids placed.</td>
+                        <td colspan="9">No bids placed.</td>
                     </tr>
                 {% endif %}
+            
             </tbody>
         </table>
     </form>
-    {% endif %} 
+    {% endif %}
+    {% if currentUser.role == 'steward' %} 
+    <h2>Shop Steward Portal</h2>
+    {% endif %}
     <h2>All Bids</h2>
     <div class="controls">
         <form action="/bidDetails" method="get" id="viewForm" style="display: inline;">
@@ -74,7 +88,7 @@
                     <th>Post Date</th>
                     <th>Close Date</th>
                     <th>Description</th>
-                    <th>Hours</th>
+                    <th>Start Time</th>
                     <th>Awarded</th>
                     <th>Days Off</th>
                 </tr>
@@ -85,7 +99,7 @@
                     <tr>
                         <td><input type="checkbox" name="bidNum" value="{{ bid.bidNum }}"></td>
                         <td data-sort="bidNumber">{{ bid.bidNum }}</td>
-                        <td>{{ bid.status }}</td>
+                        <td data-sort="status">{{ bid.status }}</td>
                         <td data-sort="postDate">{{ bid.postDate }}</td>
                         <td data-sort="closeDate">{{ bid.closeDate }}</td>
                         <td>{{ bid.description }}</td>
@@ -105,6 +119,26 @@
 </div>
 
 <script>
+    function makeCheckboxesExclusive() {
+            // Get all forms in the document
+            var forms = document.forms;
+            for (var i = 0; i < forms.length; i++) {
+                // For each form, add a click event listener to checkboxes
+                var checkboxes = forms[i].querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('click', function() {
+                        // When a checkbox is clicked, uncheck all others in the same form
+                        checkboxes.forEach(function(box) {
+                            if (box !== checkbox) box.checked = false;
+                        });
+                    });
+                });
+            }
+        }
+
+        
+        window.onload = makeCheckboxesExclusive;
+    
     function copySelectedBidNum(hiddenInputId) {
         const bidForm = document.getElementById('bidForm');
         const hiddenInput = document.getElementById(hiddenInputId);
@@ -118,13 +152,14 @@
             event.preventDefault();
         }
     }
-
+    // Sort table rows based on selected column
     function sortTable() {
         const sortBy = document.querySelector('select[name="sortBy"]').value;
         const bidForm = document.getElementById('bidForm');
         const tbody = bidForm.querySelector('tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
-
+        
+        // Sort rows based on selected column
         rows.sort((a, b) => {
             const aValue = a.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
             const bValue = b.querySelector(`td[data-sort="${sortBy}"]`).textContent.trim();
@@ -144,7 +179,7 @@
         // Reattach sorted rows to the table
         rows.forEach(row => tbody.appendChild(row));
     }
-
+    // Add event listener to sort select element
     document.addEventListener('DOMContentLoaded', () => {
         const sortSelect = document.querySelector('select[name="sortBy"]');
         sortSelect.addEventListener('change', sortTable);

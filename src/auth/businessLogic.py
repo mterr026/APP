@@ -1,3 +1,4 @@
+#This file contains the business logic for the authentication of the user
 from fastapi.security import OAuth2PasswordBearer
 from DB import CRUD
 from datetime import datetime, timedelta, timezone

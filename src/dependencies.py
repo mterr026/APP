@@ -54,5 +54,5 @@ def getCurrentActiveUser(
     currentUser: Annotated[UserLogin, Depends(getCurrentUser)],
 ):
     if currentUser.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        return RedirectResponse(url="/login-page")
     return currentUser

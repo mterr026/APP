@@ -1,6 +1,6 @@
 #Pydantic schemas
 from pydantic import BaseModel
-
+from typing import Optional
 class User(BaseModel):
     EIN: str
     fName: str
@@ -22,7 +22,7 @@ class Bids(BaseModel):
     closeDate: str
     description: str
     hours: int
-    awarded: str
+    awarded: Optional[str] = None
     daysOff: str
 
     class Config:

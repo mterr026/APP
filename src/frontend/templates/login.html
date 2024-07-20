@@ -5,8 +5,8 @@
     </div>
     <div class="login-form-container">
         <form class="loginForm">
-            <h2>Login</h2>
-            <label for="username">Username:</label>
+            <h2>Login:</h2>
+            <label for="username">EIN:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
@@ -15,12 +15,14 @@
     </div>
     <div id="error" style="color: red;"></div>
     <script>
-        document.querySelector('.loginForm').addEventListener('submit', async function (event) {
-            event.preventDefault();
-            
-            const form = event.target;
-            const formData = new FormData(form);
-            
+    // this script is used to handle the form submission and fetch the token it will then store the token in local storage and redirect to the first login page
+    document.querySelector('.loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+    
+        const form = event.target;
+        const formData = new FormData(form);
+        // fetch the token if the response is ok store the token in local storage and redirect to the first login page
+        try {
             const response = await fetch('/token', {
                 method: 'POST',
                 headers: {
@@ -28,15 +30,24 @@
                 },
                 body: new URLSearchParams(formData)
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('accessToken', data.accessToken);
                 window.location.href = '/firstLogin';
             } else {
                 const error = await response.json();
-                document.getElementById('error').innerText = error.detail;
+                // Check for a 401 status or specific error message indicating wrong credentials
+                if (response.status === 401 || error.message === "Wrong credentials") {
+                    alert('Incorrect Username and Password, please try again'); // Popup message
+                } else {
+                    document.getElementById('error').innerText = error.detail || error.message || 'Login failed';
+                }
             }
-        });
+        } catch (error) {
+            console.error('Error during fetch:', error);
+            document.getElementById('error').innerText = 'An unexpected error occurred. Please try again.';
+        }
+    });
     </script>
 {% endblock %}
