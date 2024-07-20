@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from dependencies import get_db
 from DB import models
 from bidManagement import businessLogic
+from classes import Manager
 
 # creates the instance of the APIRouter 
 router = APIRouter()
@@ -33,9 +34,14 @@ def newBid(
         awarded = awarded,
         daysOff = daysOff
     )
-    message = businessLogic.createBid(db, newBid)
-    #redirects to the bidManagement page with a message
-    return RedirectResponse(url=f"/bidManagement?message={message}", status_code=303)
+    try:
+        message = Manager.createBid(db, newBid)
+        if message is None:
+            message = "Bid Created Successfully"
+    except:
+        message = "Bid Number already exists"
+    
+    return RedirectResponse(url=f"/createBid?message={message}", status_code=303)
 
 #endpoint for updating a bid
 @router.post("/updateBid")

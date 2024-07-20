@@ -4,7 +4,11 @@
 <div class="header">
     <h2>Create Bid</h2>
 </div>
+
 <div class="form-container">
+    {% if message %}
+    <p style="color: red;">{{ message }}</p>
+    {% endif %}
     <form action="/newBid" method="post">
         <div class="form-group">
             <label for="bidNum">Bid Number:</label>

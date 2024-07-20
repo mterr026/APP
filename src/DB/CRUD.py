@@ -87,7 +87,7 @@ class CRUD:
         db.commit()
         db.refresh(newBid)
         #If successful, return success message
-        return "BID CREATION SUCCESSFUL"     
+        return "BID CREATIONS SUCCESSFUL"     
 
     def updateBid(db: Session, bidNum: int, updateBid: DB.models.Bids):
         # Retrieve the bid to update

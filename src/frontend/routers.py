@@ -86,8 +86,9 @@ def bidManagement(request: Request, db: Session = Depends(get_db), currentUser: 
 
 # Endpoint to create a new bid
 @router.get("/createBid")
-def createBid(request: Request, currentUser: str = Depends(getCurrentActiveUser)):
-    return templates.TemplateResponse("createBid.html", {"request": request})
+def createBid(request: Request, message: str = None, currentUser: str = Depends(getCurrentActiveUser)):
+
+    return templates.TemplateResponse("createBid.html", {"request": request, "message": message})
 
 # Endpoint to edit a bid
 @router.get("/editBid")
